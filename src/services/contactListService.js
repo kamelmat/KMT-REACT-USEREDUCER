@@ -7,7 +7,7 @@ const contactListService = {
             const request = await fetch(`${baseUrl}${slug}`, {
                 method: "POST",
                 headers: {
-                    accept: application / json
+                    accept: application/json
                 },
                 body: JSON.stringify()
             })
@@ -33,7 +33,7 @@ const contactListService = {
             const request = await fetch(`${baseUrl}${slug}/contacts`, {
                 method: "POST",
                 headers: {
-                    accept: application / json
+                    accept: application/json
                 },
                 body: JSON.stringify(contactInfo)
             })
@@ -52,7 +52,7 @@ const contactListService = {
             const request = await fetch(`${baseUrl}${slug}/contacts/${contactId}`,{
                 method: "DELETE",
                 headers: {
-                    accept: application / json
+                    accept: application/json
                 }
             })
 
