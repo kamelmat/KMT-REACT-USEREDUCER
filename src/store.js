@@ -6,7 +6,7 @@ const initialStore = {
   address: '',
   showForm: false,
   contacts: [],
-  editMode: false, 
+  editMode: false,
   editId: null,
 };
 
@@ -44,6 +44,14 @@ const storeReducer = (store, action) => {
 
     case 'CLEAR_AGENDA':
       return { ...store, agenda: '', contacts: [] };
+
+    case 'UPDATE_CONTACT':
+      return {
+        ...store,
+        contacts: store.contacts.map((contact) =>
+          contact.id === action.payload.id ? action.payload : contact
+        ),
+      };
 
     case 'SET_EDIT_MODE':
       return { ...store, editMode: action.value };

@@ -36,28 +36,42 @@ const ContactList = () => {
 
 
     const handleSaveContact = async () => {
-        if (!store.name || !store.phone || !store.email) {
-            alert('Name, phone and email are required!');
+        if (!store.name || !store.phone) {
+            alert('Name and phone are required!');
             return;
         }
         try {
-            const newContact = await contactListService.createContact(store.agenda, {
+            const contactData = {
                 name: store.name,
                 phone: store.phone,
                 email: store.email,
-                address: store.address
-            });
-            dispatch({ type: 'ADD_CONTACT', payload: newContact });
-            alert('Contact added successfully!');
+                address: store.address,
+            };
+
+            if (store.editMode) {
+                await contactListService.updateContact(store.agenda, store.editId, contactData);
+                alert('Contact updated successfully!');
+                dispatch({ type: 'UPDATE_CONTACT', payload: { ...contactData, id: store.editId } });
+                dispatch({ type: 'SET_EDIT_MODE', value: false });
+                dispatch({ type: 'SET_EDIT_ID', value: null });
+            } else {
+                const newContact = await contactListService.createContact(store.agenda, contactData);
+                dispatch({ type: 'ADD_CONTACT', payload: newContact });
+                alert('Contact added successfully!');
+            }
+
             dispatch({ type: 'SET_NAME', value: '' });
             dispatch({ type: 'SET_PHONE', value: '' });
             dispatch({ type: 'SET_EMAIL', value: '' });
             dispatch({ type: 'SET_ADDRESS', value: '' });
+            dispatch({ type: 'TOGGLE_FORM', value: false });
+
         } catch (error) {
             alert('Error saving contact.');
             console.error(error);
         }
     };
+
 
     const handleDelete = async (contactId) => {
         try {
@@ -126,7 +140,9 @@ const ContactList = () => {
                             value={store.address}
                             onChange={(e) => dispatch({ type: 'SET_ADDRESS', value: e.target.value })}
                         />
-                        <button onClick={handleSaveContact} className="btn btn-primary w-100">Save</button>
+                        <button onClick={handleSaveContact} className="btn btn-primary w-100">
+                            {store.editMode ? 'Editar' : 'Guardar'}
+                        </button>
                     </div>
                 </div>
             )}
