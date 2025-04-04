@@ -1,7 +1,5 @@
 const ContactCard = ({ contactName, contactEmail, contactPhone, contactAddress, onEdit, onDelete }) => {
-
-
-
+    
     return (
         <div className="card shadow-sm" style={{ width: "18rem", margin: "10px" }}>
             <div className="card-body text-center">
