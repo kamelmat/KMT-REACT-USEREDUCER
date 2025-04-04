@@ -91,7 +91,7 @@ const ContactList = () => {
                     {store.showForm ? 'Hide Form' : 'Add New Contact'}
                 </button>
                 <div className="mt-3">
-                    <Link to="/" className="text-decoration-none">Volver al inicio</Link>
+                    <Link to="/" className="text-decoration-none">Get back</Link>
                 </div>
             </div>
             {store.showForm && (
