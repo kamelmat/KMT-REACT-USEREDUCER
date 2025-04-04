@@ -1,17 +1,17 @@
-export const initialStore = () => {
-  return {
-    agenda: '',
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    contacts: [],
-  };
-}
+const initialStore = {
+  agenda: '',
+  name: '',
+  phone: '',
+  email: '',
+  address: '',
+  showForm: false,
+  contacts: [],
+  editMode: false, 
+  editId: null,
+};
 
-export const storeReducer = (store, action) => {
+const storeReducer = (store, action) => {
   switch (action.type) {
-
     case 'SET_AGENDA':
       return { ...store, agenda: action.value };
 
@@ -27,18 +27,42 @@ export const storeReducer = (store, action) => {
     case 'SET_ADDRESS':
       return { ...store, address: action.value };
 
-    case 'ADD_CONTACT':
-      return { ...store, contacts: [...store.contacts, action.payload] };
-
-    case 'DELETE_CONTACT':
-      return { ...store, contacts: state.contacts.filter(contact => contact.id !== action.payload), };
+    case 'TOGGLE_FORM':
+      return { ...store, showForm: action.value };
 
     case 'SET_CONTACTS':
       return { ...store, contacts: action.payload };
+
+    case 'ADD_CONTACT':
+      return { ...store, contacts: [...store.contacts, action.payload] };
+
+    case 'UPDATE_CONTACT':
+      return {
+        ...store,
+        contacts: store.contacts.map((contact) =>
+          contact.id === action.payload.id ? action.payload : contact
+        ),
+      };
+
+    case 'DELETE_CONTACT':
+      return {
+        ...store,
+        contacts: store.contacts.filter(contact => contact.id !== action.payload),
+      };
+
+    case 'CLEAR_AGENDA':
+      return { ...store, agenda: '', contacts: [] };
+
+    case 'SET_EDIT_MODE':
+      return { ...store, editMode: action.value };
+
+    case 'SET_EDIT_ID':
+      return { ...store, editId: action.value };
+
 
     default:
       return store;
   }
 };
 
-
+export { initialStore, storeReducer };

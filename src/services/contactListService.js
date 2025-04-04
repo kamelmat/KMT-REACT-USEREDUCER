@@ -22,6 +22,32 @@ const contactListService = {
         }
     },
 
+    getAgenda: async (slug) => {
+        try {
+            const request = await fetch(`${baseUrl}${slug}`, {
+                method: "GET",
+                headers: {
+                    accept: "application/json"
+                }
+            });
+    
+            if (request.status === 404) {
+                console.log(`Agenda "${slug}" not found.`);
+                return { detail: `Agenda "${slug}" doesn't exist.` };
+            }
+    
+            if (!request.ok) throw new Error("Error obteniendo agenda");
+    
+            const response = await request.json();
+            return response;
+    
+        } catch (error) {
+            console.log("Error en getAgenda:", error);
+            throw error;
+        }
+    },
+    
+
     getContacts: async (slug) => {
         try {
             const request = await fetch(`${baseUrl}${slug}/contacts`, {
@@ -33,8 +59,11 @@ const contactListService = {
 
             if (!request.ok) throw new Error("Error obteniendo contactos");
             const response = await request.json();
-            return response;
-
+            if (response.contacts && Array.isArray(response.contacts)) {
+                return response.contacts;
+            } else {
+                return [];
+            }
         } catch (error) {
             console.log(error);
             throw error;
