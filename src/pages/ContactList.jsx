@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer';
 import contactListService from '../services/contactListService';
 import ContactCard from '../components/ContactCard';
+import { Link } from "react-router-dom";
 
 const ContactList = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -14,7 +15,7 @@ const ContactList = () => {
                 console.log("No agenda set, skipping contact load.");
                 return;
             }
-    
+
             try {
                 const contacts = await contactListService.getContacts(store.agenda);
                 if (Array.isArray(contacts)) {
@@ -32,7 +33,7 @@ const ContactList = () => {
         };
         loadContacts();
     }, [store.agenda, dispatch]);
-    
+
 
     const handleSaveContact = async () => {
         if (!store.name || !store.phone || !store.email) {
@@ -81,72 +82,75 @@ const ContactList = () => {
 
     return (
         <div className="container mt-4">
-    <h1 className="text-center mb-4">Contacts for Agenda: {store.agenda}</h1>
-    <div className="text-center mb-4">
-        <button
-            onClick={() => dispatch({ type: 'TOGGLE_FORM', value: !store.showForm })}
-            className={`btn ${store.showForm ? 'btn-secondary' : 'btn-success'}`}
-        >
-            {store.showForm ? 'Hide Form' : 'Add New Contact'}
-        </button>
-    </div>
-    {store.showForm && (
-        <div className="card p-3 mb-4">
-            <h4 className="mb-3">New Contact</h4>
-            <div className="mb-3">
-                <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Full Name"
-                    value={store.name}
-                    onChange={(e) => dispatch({ type: 'SET_NAME', value: e.target.value })}
-                />
-                <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Phone"
-                    value={store.phone}
-                    onChange={(e) => dispatch({ type: 'SET_PHONE', value: e.target.value })}
-                />
-                <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Email"
-                    value={store.email}
-                    onChange={(e) => dispatch({ type: 'SET_EMAIL', value: e.target.value })}
-                />
-                <input
-                    type="text"
-                    className="form-control mb-2"
-                    placeholder="Address"
-                    value={store.address}
-                    onChange={(e) => dispatch({ type: 'SET_ADDRESS', value: e.target.value })}
-                />
-                <button onClick={handleSaveContact} className="btn btn-primary w-100">Save</button>
+            <h1 className="text-center mb-4">Contacts for Agenda: {store.agenda}</h1>
+            <div className="text-center mb-4">
+                <button
+                    onClick={() => dispatch({ type: 'TOGGLE_FORM', value: !store.showForm })}
+                    className={`btn ${store.showForm ? 'btn-secondary' : 'btn-success'}`}
+                >
+                    {store.showForm ? 'Hide Form' : 'Add New Contact'}
+                </button>
+                <div className="mt-3">
+                    <Link to="/" className="text-decoration-none">Volver al inicio</Link>
+                </div>
+            </div>
+            {store.showForm && (
+                <div className="card p-3 mb-4">
+                    <h4 className="mb-3">New Contact</h4>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="Full Name"
+                            value={store.name}
+                            onChange={(e) => dispatch({ type: 'SET_NAME', value: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="Phone"
+                            value={store.phone}
+                            onChange={(e) => dispatch({ type: 'SET_PHONE', value: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="Email"
+                            value={store.email}
+                            onChange={(e) => dispatch({ type: 'SET_EMAIL', value: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="Address"
+                            value={store.address}
+                            onChange={(e) => dispatch({ type: 'SET_ADDRESS', value: e.target.value })}
+                        />
+                        <button onClick={handleSaveContact} className="btn btn-primary w-100">Save</button>
+                    </div>
+                </div>
+            )}
+            <div className="contact-list">
+                {Array.isArray(store.contacts) && store.contacts.length > 0 ? (
+                    <div className="row">
+                        {store.contacts.map((contact) => (
+                            <div key={contact.id} className="col-md-4 mb-3">
+                                <ContactCard
+                                    contactName={contact.name}
+                                    contactEmail={contact.email}
+                                    contactPhone={contact.phone}
+                                    contactAddress={contact.address}
+                                    onDelete={() => handleDelete(contact.id)}
+                                    onEdit={() => handleEdit(contact)}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-center text-muted">No contacts found. Add your first contact!</p>
+                )}
             </div>
         </div>
-    )}
-    <div className="contact-list">
-        {Array.isArray(store.contacts) && store.contacts.length > 0 ? (
-            <div className="row">
-                {store.contacts.map((contact) => (
-                    <div key={contact.id} className="col-md-4 mb-3">
-                        <ContactCard
-                            contactName={contact.name}
-                            contactEmail={contact.email}
-                            contactPhone={contact.phone}
-                            contactAddress={contact.address}
-                            onDelete={() => handleDelete(contact.id)}
-                            onEdit={() => handleEdit(contact)}
-                        />
-                    </div>
-                ))}
-            </div>
-        ) : (
-            <p className="text-center text-muted">No contacts found. Add your first contact!</p>
-        )}
-    </div>
-</div>
 
     );
 };
