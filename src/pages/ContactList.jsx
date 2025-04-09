@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer';
-import contactListService from '../services/contactListService';
+import service from '../services/service';
 import ContactCard from '../components/ContactCard';
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const ContactList = () => {
             }
 
             try {
-                const contacts = await contactListService.getContacts(store.agenda);
+                const contacts = await service.getContacts(store.agenda);
                 if (Array.isArray(contacts)) {
                     dispatch({ type: 'SET_CONTACTS', payload: contacts });
                     console.log("Contacts loaded:", contacts);
@@ -49,13 +49,13 @@ const ContactList = () => {
             };
 
             if (store.editMode) {
-                await contactListService.updateContact(store.agenda, store.editId, contactData);
+                await service.updateContact(store.agenda, store.editId, contactData);
                 alert('Contact updated successfully!');
                 dispatch({ type: 'UPDATE_CONTACT', payload: { ...contactData, id: store.editId } });
                 dispatch({ type: 'SET_EDIT_MODE', value: false });
                 dispatch({ type: 'SET_EDIT_ID', value: null });
             } else {
-                const newContact = await contactListService.createContact(store.agenda, contactData);
+                const newContact = await service.createContact(store.agenda, contactData);
                 dispatch({ type: 'ADD_CONTACT', payload: newContact });
                 alert('Contact added successfully!');
             }
@@ -75,7 +75,7 @@ const ContactList = () => {
 
     const handleDelete = async (contactId) => {
         try {
-            await contactListService.deleteContact(store.agenda, contactId);
+            await service.deleteContact(store.agenda, contactId);
             dispatch({ type: 'DELETE_CONTACT', payload: contactId });
             alert('Contact deleted successfully!');
         } catch (error) {

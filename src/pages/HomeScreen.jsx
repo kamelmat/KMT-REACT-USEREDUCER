@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer';
-import contactListService from '../services/contactListService';
+import service from '../services/service';
 
 const HomeScreen = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -13,11 +13,11 @@ const HomeScreen = () => {
             return;
         }
         try {
-            const response = await contactListService.getAgenda(store.agenda);
+            const response = await service.getAgenda(store.agenda);
             console.log("Response from getAgenda:", response);
 
             if (response?.detail?.includes("doesn't exist")) {
-                await contactListService.createAgenda(store.agenda);
+                await service.createAgenda(store.agenda);
                 alert(`Agenda ${store.agenda} created successfully!`);
             } else {
                 alert('Agenda found! Loading contacts...');
@@ -28,7 +28,7 @@ const HomeScreen = () => {
         } catch (error) {
             if (error.message.includes("404")) {
                 try {
-                    await contactListService.createAgenda(store.agenda);
+                    await service.createAgenda(store.agenda);
                     alert(`Agenda ${store.agenda} created successfully!`);
                     dispatch({ type: 'SET_AGENDA', value: store.agenda });
                     navigate('/contacts');
